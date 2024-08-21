@@ -10,10 +10,16 @@ param parVnetAddressPrefix string = '10.0.0.0/23'
 
 param parSubnetNameGithub string = 'snet-github-nics-001'
 param parSubnetAddressGithub string = '10.0.0.0/24'
-param parSubnetDelegationStorageGitHub bool = false
+
+param parSubnetStorageServiceEndpointGitHub bool = false
 
 param parGithubNetworkSettingsName string = 'github-network-settings-001'
 param parGitHubDatabaseId string
+
+param parUamiName string = 'id-github-nics-001'
+
+@description('Storage account info, used during testing of private access over service endpoint')
+param parTestVnetServiceEndpoint typStorageAccountContainer?
 
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: parResourceGroup
@@ -39,7 +45,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.2.0' = {
             }
           }
         ]
-        serviceEndpoints: parSubnetDelegationStorageGitHub ? [{ service: 'Microsoft.Storage' }] : []
+        serviceEndpoints: parSubnetStorageServiceEndpointGitHub ? [{ service: 'Microsoft.Storage' }] : []
       }
     ]
   }
@@ -63,4 +69,54 @@ module githubNetworkSettings './github-networkSettings.bicep' = {
     parSubnetId: first(vnet.outputs.subnetResourceIds)
     parGitHubDatabaseId: parGitHubDatabaseId
   }
+}
+
+module uami 'br/public:avm/res/managed-identity/user-assigned-identity:0.3.0' = {
+  scope: rg
+  name: '${uniqueString(deployment().name, parLocation)}-uami'
+  params: {
+    name: parUamiName
+    federatedIdentityCredentials: [
+      {
+        name: 'eskillarsen-github-azure-private-vnet-main'
+        audiences: ['api://AzureADTokenExchange']
+        issuer: 'https://token.actions.githubusercontent.com'
+        subject: 'repo:eskillarsen/github-azure-private-vnet:ref:refs/heads/main'
+      }
+    ]
+  }
+}
+
+module storage 'br/public:avm/res/storage/storage-account:0.9.1' = if (parTestVnetServiceEndpoint != null) {
+  scope: rg
+  name: '${uniqueString(deployment().name, parLocation)}-storage-account'
+  params: {
+    name: parTestVnetServiceEndpoint.?storageAccountName!
+    skuName: 'Standard_LRS'
+    blobServices: {
+      containers: [
+        { name: parTestVnetServiceEndpoint.?containerName }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: uami.outputs.principalId
+        roleDefinitionIdOrName: 'Storage Blob Data Owner'
+      }
+    ]
+    networkAcls: {
+      defaultAction: 'Deny'
+      virtualNetworkRules: [
+        {
+          id: first(vnet.outputs.subnetResourceIds)
+          action: 'Allow'
+        }
+      ]
+    }
+  }
+}
+
+type typStorageAccountContainer = {
+  storageAccountName: string
+  containerName: string
 }
