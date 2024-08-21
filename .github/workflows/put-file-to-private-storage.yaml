@@ -21,6 +21,7 @@ jobs:
       - name: Azure Login
         shell: pwsh
         run: |
+          Clear-AzContext -Force
           Update-AzConfig -EnableLoginByWam $false
           Connect-AzAccount -Identity -AccountId $env:MSI_CLIENT_ID
   
