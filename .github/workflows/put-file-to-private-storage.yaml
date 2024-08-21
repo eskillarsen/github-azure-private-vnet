@@ -14,8 +14,8 @@ jobs:
       - name: Install pwsh modules [Az.Accounts Az.Resources Az.KeyVault Az.Automation]
         shell: pwsh
         run: |
-          Install-Module -Name Az.Accounts -RequiredVersion 3.0.2 -Repository PSGallery -Force
-          Install-Module -Name Az.Storage -RequiredVersion 6.1.3 -Repository PSGallery -Force
+          Install-Module -Name Az.Accounts -RequiredVersion 3.0.2 -Force
+          Install-Module -Name Az.Storage -RequiredVersion 6.1.3 -Force
 
       - name: Azure Login
         shell: pwsh
