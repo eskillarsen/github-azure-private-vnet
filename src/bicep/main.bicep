@@ -77,7 +77,7 @@ module uami 'br/public:avm/res/managed-identity/user-assigned-identity:0.3.0' = 
     name: parUamiName
     federatedIdentityCredentials: [
       {
-        name: 'eskillarsen/github-azure-private-vnet/main'
+        name: 'eskillarsen-github-azure-private-vnet-main'
         audiences: ['api://AzureADTokenExchange']
         issuer: 'https://token.actions.githubusercontent.com'
         subject: 'repo:eskillarsen/github-azure-private-vnet:ref:refs/heads/main'
