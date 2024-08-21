@@ -2,13 +2,14 @@
 Use GitHub-hosted runners with an Azure private network in your organization
 
 **Table of content:**
+ - [Prerequisites](#prerequisites)
+   - [Register resource provider on target subscription](#register-resource-provider-on-target-subscription)
+   - [Get GitHub DatabaseId](#get-github-databaseid)
 
- - [Register resource provider on target subscription](#Register-resource-provider-on-target-subscription)
- - [Get GitHub DatabaseId](#Get-GitHub-DatabaseId)
+## Prerequisites
+### Register resource provider on target subscription
 
-## Register resource provider on target subscription
-
-### Check resource provider
+#### Check resource provider
 ```bicep
 Set-AzContext -Subscription 'landing-zone-demo-001'
 Get-AzResourceProvider -ProviderNamespace "GitHub.Network" | Format-Table
@@ -22,12 +23,12 @@ GitHub.Network    NotRegistered     {networkSettings}         {East US, East US 
 GitHub.Network    NotRegistered     {registeredSubscriptions} {global}
 ```
 
-### Register resource provider
+#### Register resource provider
 ```bicep
 Register-AzResourceProvider -ProviderNamespace 'GitHub.Network'
 ```
 
-### Success
+#### Success
 ```bicep
 Get-AzResourceProvider -ProviderNamespace "GitHub.Network" | Format-Table
 ```
@@ -39,7 +40,7 @@ GitHub.Network    Registered        {networkSettings}         {East US, East US 
 GitHub.Network    Registered        {registeredSubscriptions} {global}
 ```
 
-## Get GitHub DatabaseId
+### Get GitHub DatabaseId
 ```pwsh
 Import-Module ./src/pwsh/Get-GithubDatabaseId.psm1
 Get-GithubDatabaseId.ps1 -OrganizationName myOrgHere -BearerToken $env:GH_TOKEN

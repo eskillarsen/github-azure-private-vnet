@@ -10,6 +10,7 @@ param parVnetAddressPrefix string = '10.0.0.0/23'
 
 param parSubnetNameGithub string = 'snet-github-nics-001'
 param parSubnetAddressGithub string = '10.0.0.0/24'
+
 param parSubnetStorageServiceEndpointGitHub bool = false
 
 param parGithubNetworkSettingsName string = 'github-network-settings-001'
