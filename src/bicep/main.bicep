@@ -86,7 +86,7 @@ module uami 'br/public:avm/res/managed-identity/user-assigned-identity:0.3.0' = 
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.1' =  if (parTestVnetServiceEndpoint != null) {
+module storage 'br/public:avm/res/storage/storage-account:0.9.1' = if (parTestVnetServiceEndpoint != null) {
   scope: rg
   name: '${uniqueString(deployment().name, parLocation)}-storage-account'
   params: {
