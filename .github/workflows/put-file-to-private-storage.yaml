@@ -2,6 +2,9 @@ name: Put file in private storage
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write # Require write permission to Fetch an OIDC token.
+
 env:
   PRIVATE_STORAGE_ACCOUNT_NAME: ${{ vars.PRIVATE_STORAGE_ACCOUNT_NAME }}
   PRIVATE_STORAGE_ACCOUNT_CONTAINER_NAME: ${{ vars.PRIVATE_STORAGE_ACCOUNT_CONTAINER_NAME }}
