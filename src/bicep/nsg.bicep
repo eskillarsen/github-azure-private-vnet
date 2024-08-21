@@ -192,7 +192,7 @@ resource actions_NSG 'Microsoft.Network/networkSecurityGroups@2017-06-01' = {
           destinationAddressPrefixes: []
         }
       }
-      {
+      /*{
         name: 'DenyInternetOutBoundOverwrite'
         properties: {
           protocol: '*'
@@ -204,7 +204,7 @@ resource actions_NSG 'Microsoft.Network/networkSecurityGroups@2017-06-01' = {
           priority: 400
           direction: 'Outbound'
         }
-      }
+      }*/
     ]
   }
 }
